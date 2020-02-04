@@ -1,4 +1,4 @@
-package com.example.schedule_app
+package com.goosenative.schedule
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
