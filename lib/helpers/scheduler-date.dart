@@ -46,3 +46,10 @@ getCurrentScheduleDay(DateTime startDate, String dateToParse,
     return {'week': weekIndex, 'day': temp == 0 ? 1 : temp};
   }
 }
+
+parseDate(String dateToParse) {
+  DateFormat format = new DateFormat("dd-MM-yyyy");
+  DateTime date = format.parse(dateToParse);
+  String formattedDate = DateFormat('yMMMd').format(date);
+  return formattedDate;
+}

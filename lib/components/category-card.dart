@@ -1,13 +1,11 @@
 import 'dart:ui';
-
+import 'package:schedule_app/models/content-category.dart';
 import 'package:flutter/material.dart';
 
 class CategoryCard extends StatelessWidget {
-  CategoryCard(
-      {@required this.index, @required this.name, @required this.onPress});
+  CategoryCard({@required this.contentCategory, @required this.onPress});
 
-  final index;
-  final name;
+  final ContentCategory contentCategory;
   final Function onPress;
 
   @override
@@ -26,7 +24,7 @@ class CategoryCard extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
               colorFilter: ColorFilter.mode(Color(0xffffde6f), BlendMode.dst),
-              image: ExactAssetImage('assets/images/week-head.png', scale: 1),
+              image: ExactAssetImage(this.contentCategory.imgUrl, scale: 1),
               fit: BoxFit.fill,
             ),
             borderRadius: BorderRadius.circular(20),
@@ -42,7 +40,8 @@ class CategoryCard extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     color: Colors.white60,
-                    child: Text(this.name,
+                    child: Text(this.contentCategory.name,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 25,

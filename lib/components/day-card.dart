@@ -21,11 +21,12 @@ class DayCard extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text(day.name,
+                  Text(this.day.name,
                       style:
                           TextStyle(fontWeight: FontWeight.w500, fontSize: 18)),
-                  Text(day.date != null ? day.date : '',
+                  Text(this.day.date != null ? this.day.date : '',
                       style: TextStyle(
                           color: Colors.grey[700],
                           fontWeight: FontWeight.w400,
@@ -54,7 +55,7 @@ class DayCard extends StatelessWidget {
         ? Padding(padding: EdgeInsets.all(5), child: Text('Занятий нет'))
         : ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
             shrinkWrap: true,
             itemCount: day.lessons.length,
             itemBuilder: (context, index) => new ListTile(

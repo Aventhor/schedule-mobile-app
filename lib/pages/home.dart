@@ -7,7 +7,7 @@ import 'package:schedule_app/models/week.dart';
 import 'package:schedule_app/models/day.dart';
 import 'package:schedule_app/components/category-card.dart';
 import 'package:schedule_app/components/day-card.dart';
-import 'package:schedule_app/pages/week-page.dart';
+import 'package:schedule_app/pages/category-page.dart';
 import 'dart:async';
 import 'package:schedule_app/helpers/api.dart';
 import 'package:schedule_app/helpers/scheduler.dart';
@@ -22,6 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<ContentCategory> appCategories;
+  List<int> categoriesCards;
   Schedule schedule;
   Day nowDay;
   Day nextDay;
@@ -30,13 +31,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     initializeDateSettings();
-
+    this.categoriesCards = [];
     this.appCategories = categories;
   }
 
   @override
   void didUpdateWidget(Widget oldWidget) {
+    getCategoriesCard();
     setCurrentDayCard();
+    setNextDayCard();
   }
 
   getSchedule({bool force: false}) async {
@@ -47,8 +50,27 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       this.schedule = schedule;
     });
-
+    getCategoriesCard();
     return schedule;
+  }
+
+  getCategoriesCard() {
+    categoriesCards = [];
+    appCategories.asMap().forEach((index, item) => {
+          if (item.code == CATEGORIES_IDS['FIRST_WEEK'] ||
+              item.code == CATEGORIES_IDS['SECOND_WEEK'])
+            {
+              categoriesCards.add(index),
+            }
+          else if (item.code == CATEGORIES_IDS['CHANGES'])
+            {
+              if (this.schedule.changes.isNotEmpty) categoriesCards.add(index),
+            }
+          else if (item.code == CATEGORIES_IDS['EXAMS'])
+            {
+              if (this.schedule.exams.isNotEmpty) categoriesCards.add(index),
+            }
+        });
   }
 
   setCurrentDayCard() {
@@ -127,11 +149,10 @@ class _HomePageState extends State<HomePage> {
                 scrollDirection: Axis.horizontal,
                 pageSnapping: true,
                 itemBuilder: (context, index) => new CategoryCard(
-                    index: index,
-                    name: appCategories[index].name,
-                    onPress: () => this
-                        .onCategoryTapped(context, appCategories[index].code)),
-                itemCount: appCategories.length,
+                    contentCategory: appCategories[categoriesCards[index]],
+                    onPress: () => this.onCategoryTapped(
+                        context, appCategories[categoriesCards[index]])),
+                itemCount: this.categoriesCards.length,
               ),
             ),
             SizedBox(height: 20),
@@ -171,17 +192,36 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<Null> onCategoryTapped(context, code) async {
+  Future<Null> onCategoryTapped(context, ContentCategory category) async {
     Week week = new Week(code: 0, name: '', days: []);
-    this.schedule.weeks.forEach((item) => {
-          if (code == item.code)
-            {
-              week = item,
-            }
-        });
+
+    if (category.code == CATEGORIES_IDS['CHANGES']) {
+      this.schedule.changes.forEach((item) => {
+            week.days.add(new Day(
+                name: item.name,
+                date: item.date,
+                weekCode: item.weekCode,
+                lessons: item.lessons)),
+          });
+    } else if (category.code == CATEGORIES_IDS['EXAMS']) {
+      this.schedule.exams.forEach((item) => {
+            week.days.add(new Day(
+                name: item.name, date: item.date, lessons: item.lessons)),
+          });
+    } else {
+      this.schedule.weeks.forEach((item) => {
+            if (category.code == item.code)
+              {
+                week = item,
+              }
+          });
+    }
+
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => new WeekPage(week: week)),
+      MaterialPageRoute(
+          builder: (context) =>
+              new CategoryPage(contentCategory: category, week: week)),
     );
   }
 
@@ -203,7 +243,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        title: Text('Расписание', style: TextStyle(color: Colors.black)),
+        title: Text('ИГХТУ Расписание', style: TextStyle(color: Colors.black)),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
