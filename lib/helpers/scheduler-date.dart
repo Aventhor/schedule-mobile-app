@@ -37,7 +37,9 @@ getCurrentScheduleDay(DateTime startDate, String dateToParse,
     while (temp <= difference) {
       weekIndex % 2 == 0 ? weekIndex -= 1 : weekIndex += 1;
 
-      if (temp + 7 >= difference) {
+      if (temp + 7 == difference) {
+        return {'week': weekIndex, 'day': 0};
+      } else if (temp + 7 > difference) {
         weekIndex % 2 == 0 ? weekIndex -= 1 : weekIndex += 1;
         break;
       }
