@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
           if (item.code == currentScheduleDay['week'])
             {
               this.schedule.weeks[index].days.asMap().forEach((index, day) => {
-                    if (index == currentScheduleDay['day'] - 1)
+                    if (index == currentScheduleDay['day'])
                       {
                         currentLessons = day.lessons,
                       }

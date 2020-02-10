@@ -24,11 +24,13 @@ getCurrentScheduleDay(DateTime startDate, String dateToParse,
   final difference = startDate.difference(date).inDays;
 
   if (difference == 0) {
-    return {'week': weekStartPoint, 'day': 1};
+    return {'week': weekStartPoint, 'day': 0};
   } else if (difference < 0) {
-    return {'week': weekStartPoint, 'day': 7};
-  } else if (difference <= 7) {
+    return {'week': weekStartPoint, 'day': 6};
+  } else if (difference <= 6) {
     return {'week': weekStartPoint, 'day': difference};
+  } else if (difference == 7) {
+    return {'week': weekStartPoint == 1 ? 2 : 1, 'day': 0};
   } else {
     int temp = 0;
     int weekIndex = 2;
